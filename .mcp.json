@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "remoteskill": {
+      "type": "streamable-http",
+      "url": "https://mcp.remoteskill.md/mcp"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "remoteskill",
+  "description": "The RemoteSkill plugin: connects Claude Code to your hosted RemoteSkill library over MCP.",
+  "owner": {
+    "name": "Leeor Nahum",
+    "url": "https://github.com/LeeorNahum"
+  },
+  "plugins": [
+    {
+      "name": "remoteskill",
+      "source": "./",
+      "description": "Serves your RemoteSkill library to this agent. Your Agent Skills live in one hosted place and every agent reads the same copy.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Leeor Nahum",
+        "url": "https://github.com/LeeorNahum"
+      },
+      "homepage": "https://remoteskill.md",
+      "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
+      "license": "MIT",
+      "keywords": ["agent-skills", "skills", "mcp", "remoteskill"]
+    }
+  ]
+}
