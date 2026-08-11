@@ -10,6 +10,10 @@
   },
   "homepage": "https://remoteskill.md",
   "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
-  "license": "MIT",
-  "keywords": ["agent-skills", "skills", "mcp", "remoteskill"]
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "mcp",
+    "remoteskill"
+  ]
 }

@@ -1,92 +1,54 @@
 # RemoteSkill plugin
 
-One manifest that points an agent at your [RemoteSkill](https://remoteskill.md) library.
+Points an agent at your [RemoteSkill](https://remoteskill.md) library: one MCP server at
+`https://mcp.remoteskill.md/mcp`, declared in both the [Agent Plugins 1.0.0](https://agent-plugins.org)
+format (`plugin.json`, `mcp.json`) and Claude Code's (`.claude-plugin/`, `.mcp.json`).
 
-RemoteSkill hosts your Agent Skills once and serves them to every agent through an MCP server. This repository is the plugin that installs that server. It is an [Agent Plugins 1.0.0](https://agent-plugins.org) plugin, and the same directory also carries Claude Code's own plugin shape, so one repository serves both.
+Sign-in is OAuth through your agent's own prompt. Skills are per-account content served
+behind that sign-in, so the plugin carries none; `skills/remoteskill/` holds only the usage
+skill. A plugin installed before you sign in shows nothing until the sign-in completes,
+because the format treats an unauthorized server as a failed connection.
 
-**The plugin carries no skill content, and that is correct rather than a limitation.** Skills are per account, private, and served live behind a sign-in. A plugin is a static directory that every installer receives identically, so baking skills into it would publish private material and be stale the moment you edited a skill. The plugin declares exactly one thing: where your library lives. It is the front door, not the house.
+## Tools
 
-## What is in here
+- `list_skills`: your catalog, every skill's name and full description.
+- `read_skill`: one skill's `SKILL.md` and file manifest, or a single bundled file.
+- `create_skill`: a new hosted skill, by name. An existing name is refused with every holder listed.
+- `save_skill_file`, `delete_skill_file`: edit one file in a hosted skill, by the skill's stable ID.
 
-| File | Read by |
+Writes reach exactly what you could edit in the app: hosted skills nothing else updates. A
+skill mirroring a GitHub repository or following someone's shared skill is read-only here.
+
+## Where it works
+
+The server speaks MCP revision `2026-07-28` only. Measured 2026-08-09:
+
+| Client | Connects |
 | --- | --- |
-| `plugin.json` | Agent Plugins 1.0.0 clients (VS Code, Cursor, GitHub Copilot, ChatGPT, Codex, Kiro, Hermes) |
-| `mcp.json` | The same clients, for the MCP server declaration |
-| `.claude-plugin/plugin.json` | Claude Code |
-| `.claude-plugin/marketplace.json` | Claude Code, and Codex, which reads this catalog format too |
-| `.mcp.json` | Claude Code, for the MCP server declaration |
+| ChatGPT | **Yes** |
+| Claude Code 2.1.226 | Not yet, sends `2025-11-25` |
+| Cursor 3.15.6 | Not yet, sends `2025-11-25` |
+| VS Code 1.132.0 | Not yet |
+| Codex CLI 0.147.0 | Not yet, sends `2025-06-18` |
 
-Both manifests declare one Streamable HTTP server at `https://mcp.remoteskill.md/mcp`, and nothing else. There is no `skills/` directory, no `headers` key, and no credential of any kind. Agent Plugins 1.0.0 section 7.2.1 is explicit that header values are visible package data, so the correct expression of "authorization is the client's job" is to omit the field entirely.
-
-## Signing in
-
-The plugin holds no credential and needs none. Your agent connects to the server, gets an OAuth challenge, and shows you its own sign-in prompt. You authorize RemoteSkill once in a browser, your agent stores the token, and later sessions just work.
-
-One consequence is worth knowing before you install: Agent Plugins 1.0.0 makes an authorization failure a connection failure rather than a configuration error, so **a plugin installed before you sign in looks like nothing happening**. That is expected. Install it, then complete the sign-in your agent offers.
-
-Five tools arrive with the connection:
-
-- `list_skills` returns your catalog, every skill's name and its full description.
-- `read_skill` returns one skill's `SKILL.md`, plus its file manifest, or a single bundled file.
-- `create_skill` creates a new hosted skill from `SKILL.md` content, addressed by name. A name a live skill already answers to is refused with every holder listed, so creating can never replace anything.
-- `save_skill_file` and `delete_skill_file` edit one file in a hosted skill, addressed by the skill's stable ID so an ambiguous name can never touch the wrong skill.
-
-The writes reach exactly what you could edit in the app yourself: hosted skills, meaning skills nothing else updates. A skill mirroring a GitHub repository or following another person's shared skill is read-only here too, and the server says so when asked to change one. The connection's OAuth token is bound to your account, and nothing can read or write another account's library.
-
-## Where it works today
-
-Every client below loads the plugin. Whether the server then connects depends on which MCP protocol revision the client speaks, because `mcp.remoteskill.md` serves revision `2026-07-28` and only that revision.
-
-| Client | Plugin loads | Speaks `2026-07-28` | Connects today |
-| --- | --- | --- | --- |
-| ChatGPT (web, desktop, mobile) | Yes | Yes | **Yes** |
-| Claude Code 2.1.226 | Yes | No, sends `2025-11-25` | Not yet |
-| Cursor 3.15.6 | Yes | No, sends `2025-11-25` | Not yet |
-| VS Code 1.132.0 | Yes | No, `2026-07-28` is absent from the build | Not yet |
-| Codex CLI 0.147.0 | Yes | No, sends `2025-06-18` | Not yet |
-
-Measured on 2026-08-09 by pointing each client at a loopback server that logs the revision it puts on the wire. "Not yet" means the client's own MCP implementation has not moved to the current revision, not that anything here is misconfigured. Those clients will connect without any change to this plugin once they do, which is why the entries are published now.
-
-If you use Claude in the browser or the desktop app, there is no plugin install path there at all. Add RemoteSkill as a connector instead.
+Clients connect without any plugin change once they ship the current revision.
 
 ## Install
 
-**ChatGPT and Codex.** Search the plugin directory for RemoteSkill once it is listed. Until then, Codex can install it straight from this repository:
-
 ```bash
+# Codex
 codex plugin marketplace add LeeorNahum/RemoteSkill-Plugin
 codex plugin add remoteskill@remoteskill
-```
 
-**Claude Code.** This repository is a marketplace as well as a plugin:
-
-```
+# Claude Code
 /plugin marketplace add LeeorNahum/RemoteSkill-Plugin
 /plugin install remoteskill@remoteskill
-```
 
-**Cursor.** Clone into Cursor's local plugin directory:
-
-```bash
+# Cursor
 git clone https://github.com/LeeorNahum/RemoteSkill-Plugin ~/.cursor/plugins/local/remoteskill
 ```
 
-**VS Code and GitHub Copilot.** Clone anywhere, then point VS Code at the directory in your user settings:
+VS Code: clone anywhere, then add the directory to `chat.pluginLocations` in user settings.
 
-```json
-"chat.pluginLocations": {
-  "/absolute/path/to/RemoteSkill-Plugin": true
-}
-```
-
-`Chat: Install Plugin From Source` in the Command Palette installs from a git URL instead. VS Code starts a plugin's MCP servers when you open the Chat view, not at launch.
-
-## Versioning
-
-The endpoint in this repository is production. Staging is exercised with each client's local plugin directory rather than with a second published variant, which is what those directories are for.
-
-The URL is deliberately restated in two files, one per manifest format. A test in the RemoteSkill repository fetches both of them and asserts they equal the endpoint the deployment itself advertises, so the two cannot silently diverge.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+A test in the RemoteSkill repository asserts both manifests equal the endpoint the
+deployment advertises, so they cannot silently diverge.
