@@ -1,0 +1,3 @@
+[submodule ".agents/skills/release-versioning"]
+	path = .agents/skills/release-versioning
+	url = https://github.com/LeeorNahum/release-versioning-skill.git

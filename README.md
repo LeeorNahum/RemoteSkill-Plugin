@@ -1,5 +1,7 @@
 # RemoteSkill plugin
 
+[![GitHub Release](https://img.shields.io/github/v/release/LeeorNahum/RemoteSkill-Plugin?sort=semver)](https://github.com/LeeorNahum/RemoteSkill-Plugin/releases/latest)
+
 Points an agent at your [RemoteSkill](https://remoteskill.md) library: one MCP server at
 `https://mcp.remoteskill.md/mcp`, declared in both the [Agent Plugins 1.0.0](https://agent-plugins.org)
 format (`plugin.json`, `mcp.json`) and Claude Code's (`.claude-plugin/`, `.mcp.json`).
