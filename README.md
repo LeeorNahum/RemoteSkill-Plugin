@@ -2,7 +2,7 @@
 
 One manifest that points an agent at your [RemoteSkill](https://remoteskill.md) library.
 
-RemoteSkill hosts your Agent Skills once and serves them to every agent through a read-only MCP server. This repository is the plugin that installs that server. It is an [Agent Plugins 1.0.0](https://agent-plugins.org) plugin, and the same directory also carries Claude Code's own plugin shape, so one repository serves both.
+RemoteSkill hosts your Agent Skills once and serves them to every agent through an MCP server. This repository is the plugin that installs that server. It is an [Agent Plugins 1.0.0](https://agent-plugins.org) plugin, and the same directory also carries Claude Code's own plugin shape, so one repository serves both.
 
 **The plugin carries no skill content, and that is correct rather than a limitation.** Skills are per account, private, and served live behind a sign-in. A plugin is a static directory that every installer receives identically, so baking skills into it would publish private material and be stale the moment you edited a skill. The plugin declares exactly one thing: where your library lives. It is the front door, not the house.
 
@@ -24,12 +24,14 @@ The plugin holds no credential and needs none. Your agent connects to the server
 
 One consequence is worth knowing before you install: Agent Plugins 1.0.0 makes an authorization failure a connection failure rather than a configuration error, so **a plugin installed before you sign in looks like nothing happening**. That is expected. Install it, then complete the sign-in your agent offers.
 
-Two read-only tools arrive with the connection:
+Five tools arrive with the connection:
 
 - `list_skills` returns your catalog, every skill's name and its full description.
 - `read_skill` returns one skill's `SKILL.md`, plus its file manifest, or a single bundled file.
+- `create_skill` creates a new hosted skill from `SKILL.md` content, addressed by name. A name a live skill already answers to is refused with every holder listed, so creating can never replace anything.
+- `save_skill_file` and `delete_skill_file` edit one file in a hosted skill, addressed by the skill's stable ID so an ambiguous name can never touch the wrong skill.
 
-Nothing here can write to your library.
+The writes reach exactly what you could edit in the app yourself: hosted skills, meaning skills nothing else updates. A skill mirroring a GitHub repository or following another person's shared skill is read-only here too, and the server says so when asked to change one. The connection's OAuth token is bound to your account, and nothing can read or write another account's library.
 
 ## Where it works today
 
