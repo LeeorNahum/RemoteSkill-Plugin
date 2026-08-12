@@ -19,6 +19,8 @@ because the format treats an unauthorized server as a failed connection.
   frontmatter. An existing name is refused with every holder listed.
 - `write_skill_file`, `edit_skill_file`, `delete_skill_file`: change one file in a hosted skill, by
   the skill's stable ID. Write sends the whole file; edit replaces one exact fragment.
+- `add_skill`: add one skill from one link, either a GitHub link to its `SKILL.md` on a branch or a
+  RemoteSkill share link. A repository on its own is refused, because it may hold many skills.
 
 Writes reach exactly what you could edit in the app: hosted skills nothing else updates. A
 skill mirroring a GitHub repository or following someone's shared skill is read-only here.
