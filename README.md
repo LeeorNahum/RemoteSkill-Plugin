@@ -13,10 +13,12 @@ because the format treats an unauthorized server as a failed connection.
 
 ## Tools
 
-- `list_skills`: your catalog, every skill's name and full description.
+- `list_skills`: your catalog, every skill's name and full description, each with its ID and URL.
 - `read_skill`: one skill's `SKILL.md` and file manifest, or a single bundled file.
-- `create_skill`: a new hosted skill, by name. An existing name is refused with every holder listed.
-- `save_skill_file`, `delete_skill_file`: edit one file in a hosted skill, by the skill's stable ID.
+- `create_skill`: a new hosted skill from the `SKILL.md` you give it, which carries the name in its
+  frontmatter. An existing name is refused with every holder listed.
+- `write_skill_file`, `edit_skill_file`, `delete_skill_file`: change one file in a hosted skill, by
+  the skill's stable ID. Write sends the whole file; edit replaces one exact fragment.
 
 Writes reach exactly what you could edit in the app: hosted skills nothing else updates. A
 skill mirroring a GitHub repository or following someone's shared skill is read-only here.
