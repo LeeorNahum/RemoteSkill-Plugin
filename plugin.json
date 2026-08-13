@@ -1,12 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "remoteskill",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Serves your RemoteSkill library to this agent. Your Agent Skills live in one hosted place and every agent reads the same copy.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"
   },
   "homepage": "https://remoteskill.md",
-  "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin"
+  "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
+  "license": "Apache-2.0"
 }
