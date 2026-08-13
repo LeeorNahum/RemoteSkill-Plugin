@@ -27,17 +27,34 @@ skill mirroring a GitHub repository or following someone's shared skill is read-
 
 ## Where it works
 
-The server speaks MCP revision `2026-07-28` only. Measured 2026-08-09:
+The server speaks MCP revision `2026-07-28` only. Each row carries the date it was measured,
+because they were not all measured on the same day:
 
-| Client | Connects |
-| --- | --- |
-| ChatGPT | **Yes** |
-| Claude Code 2.1.226 | Not yet, sends `2025-11-25` |
-| Cursor 3.15.6 | Not yet, sends `2025-11-25` |
-| VS Code 1.132.0 | Not yet |
-| Codex CLI 0.147.0 | Not yet, sends `2025-06-18` |
+| Client | Connects | Measured |
+| --- | --- | --- |
+| Claude Code 2.1.229 | **Yes**, sends `2026-07-28` | 2026-08-13 |
+| claude.ai | **Yes** | 2026-08-13 |
+| ChatGPT | **Yes** | 2026-08-09 |
+| Cursor 3.15.6 | Not yet, sends `2025-11-25` | 2026-08-09 |
+| VS Code 1.132.0 | Not yet | 2026-08-09 |
+| Codex CLI 0.147.0 | Not yet, sends `2025-06-18` | 2026-08-09 |
 
-Clients connect without any plugin change once they ship the current revision.
+Claude Code was measured on the wire: a local server logged its requests, and it sent
+`MCP-Protocol-Version: 2026-07-28` with `server/discover` as its first call, never `initialize`.
+The claude.ai row is weaker evidence, measured in the product rather than on the wire: the
+connection is healthy and all seven tools are listed, split two and five by their read-only and
+destructive annotations, which needs a completed `tools/list` to render. Claude Desktop is not in
+the table because it was not tested.
+
+The rows still at "not yet" connect without any plugin change once they ship the current
+revision, which is exactly what Claude Code did between 2.1.226 and 2.1.229.
+
+## Connecting
+
+The server is OAuth, so a fresh install reports `! Needs authentication` and shows no tools until
+you sign in. That is the first state, not a fault. `SETUP.md` walks an agent through the
+connection, and in Claude Code the manual path is `/mcp`, then `plugin:remoteskill:remoteskill`,
+then Authenticate.
 
 ## Install
 
