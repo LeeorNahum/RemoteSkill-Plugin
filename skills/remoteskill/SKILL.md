@@ -1,6 +1,6 @@
 ---
 name: remoteskill
-description: Use the RemoteSkill MCP tools to find and apply the user's own Agent Skills. Use at session start when no skill catalog is in context, after context compaction, whenever a task might match a skill the user owns, when the user asks to read, create, or edit one of their hosted skills, and when they hand over a link to a skill and want it added to their library.
+description: Use the RemoteSkill MCP tools to find and apply the user's own Agent Skills. Use at session start when no skill catalog is in context, after context compaction, whenever a task might match a skill the user owns, when the user asks to read, create, edit, or remove one of their hosted skills, and when they hand over links to skills and wants them added to their library.
 ---
 
 # RemoteSkill
@@ -36,24 +36,36 @@ The user's Agent Skills live in their RemoteSkill library, served by the connect
   `write_skill_file` instead.
 - `create_skill` takes the new skill's `SKILL.md` content and nothing else: its frontmatter
   is the name and the description. Writing `SKILL.md` later works the same way, so changing
-  the frontmatter name renames the skill. A name collision on create returns every holder
+  the frontmatter name renames the skill, and the write's result carries the identity it
+  produced: use that name from then on, not the one you started with. A name collision on create returns every holder
   with its `id`; never retry a create by guessing.
 
-## Adding from a link
+## Adding from links
 
-- When the user hands you a link to a skill, or points you at one you can see, call
-  `add_skill` with that one link. Two kinds work: a GitHub link to the skill's `SKILL.md` on
-  a branch (the `blob` address, the `raw.githubusercontent.com` spelling of the same file, or
-  the `/tree/` link to the directory it sits in), and a RemoteSkill share link somebody sent
-  them.
-- A skill is a directory holding a `SKILL.md`, so the link has to name that one directory. A
-  repository on its own is refused rather than guessed at, because it may hold many skills.
-- One link per call, and there is no batch argument. Five links are five calls, each with its
-  own outcome and its own failure.
-- `mode` is for share links only and defaults to following the person who shared it, which
-  stops working if they stop sharing. `copy` takes a detached copy that is the user's to edit
-  and never updates again.
-- Read the result rather than assuming one. `outcome: updated` means the user already had a
-  skill fed by that repository directory and it was refreshed, not that a second one appeared.
-  A name one of their skills already wears is kept beside it rather than replacing it, so hand
-  them the `url` in the result, which is what tells the two apart.
+- When the user hands you links to skills, or points you at some you can see, call
+  `add_skills` with them, one item per link. Two kinds work: a GitHub link to the skill's
+  `SKILL.md` on a branch (the `blob` address, the `raw.githubusercontent.com` spelling of
+  the same file, or the `/tree/` link to the directory it sits in), and a RemoteSkill share
+  link somebody sent them.
+- A skill is a directory holding a `SKILL.md`, so each link has to name that one directory.
+  A repository on its own is refused rather than guessed at, because it may hold many
+  skills; the user picks among a repository's skills on the RemoteSkill import screen.
+- Items are independent, and results come back one per item, in your order, with any
+  failure inline beside its link. Read every entry rather than only the successes, and
+  report failures to the user with the reason each result carries.
+- `mode` is per item, applies to share links only, and defaults to following the person who
+  shared it, which stops working if they stop sharing. `copy` takes a detached copy that is
+  the user's to edit and never updates again.
+- Read each result rather than assuming one. `outcome: updated` means the user already had
+  a skill fed by that repository directory and it was refreshed, not that a second one
+  appeared. A name one of their skills already wears is kept beside it rather than
+  replacing it, so hand them the `url` in the result, which is what tells the two apart.
+
+## Removing
+
+- When the user asks to remove skills from their library, call `remove_skills` with their
+  stable `id`s, from `list_skills`. Never guess an `id` from a name: list first, and if a
+  name matches two skills, ask the user which one they mean, because removal cannot be
+  undone and there is no history behind it.
+- An `id` that matches nothing answers `not_found` for that entry, so a retry after a
+  partial success is safe. Report each entry's outcome to the user.

@@ -54,7 +54,7 @@ Call `list_skills`. A catalog coming back, however short, means the connection i
 **An empty catalog is a working connection, not a failed one.** Skills are per-account content
 and the plugin carries none of them, so a new account has nothing to list. Say that plainly
 instead of retrying, and point the person at <https://remoteskill.md> to import from GitHub or
-upload, or offer `add_skill` if they are already holding a link to one skill.
+upload, or offer `add_skills` if they are already holding links to skills.
 
 ## When the problem is not the sign-in
 
