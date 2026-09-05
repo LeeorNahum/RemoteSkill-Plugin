@@ -1,71 +1,52 @@
 ---
-name: remoteskill
-description: Use the RemoteSkill MCP tools to find and apply the user's own Agent Skills. Use at session start when no skill catalog is in context, after context compaction, whenever a task might match a skill the user owns, when the user asks to read, create, edit, or remove one of their hosted skills, and when they hand over links to skills and wants them added to their library.
+name: "remoteskill"
+description: "Use for every request to apply the user's global Agent Skills and preferences, including simple replies and tasks that do not mention skills. Also use when managing the user's RemoteSkill library."
+metadata:
+  author: "Leeor Nahum"
+  version: "3.1.0"
 ---
 
 # RemoteSkill
 
-The user's Agent Skills live in their RemoteSkill library, served by the connected
-`remoteskill` MCP server. The catalog is not in your context until you ask for it.
+The user's global Agent Skills live in their RemoteSkill library. The connected
+`remoteskill` MCP server provides the catalog independently of the current directory.
 
-## Reading
+## Catalog First
 
-- Call `list_skills` at session start when no catalog is in context, and again after
-  compaction. An unfamiliar skill in the list may be one the user owns and expects you to
-  follow.
-- Before a task, check the list for a matching skill. If one matches, call `read_skill`
-  with its name to get `SKILL.md` plus the skill's file manifest, and follow it. A name
-  two skills share answers with both, each with its `id`; ask again by `id`.
-- Read a bundled file only when the skill's body directs you to it: `read_skill` with the
-  skill's name and the file's `path`. Paths are skill-relative identifiers served by the
-  tool, not filesystem paths.
-- Reads are idempotent. Re-fetch a skill whenever you are unsure it is still in context.
+- Before the first answer or task action in a session, call `list_skills` when no RemoteSkill
+  catalog is already in context.
+- After context compaction, treat the catalog as absent unless the compacted context clearly
+  preserves it, and call `list_skills` before answering.
+- Before every response, inspect the catalog descriptions. Apply every skill whose description
+  says it always applies and every skill that matches the current request. Read a matching body
+  when it is absent or stale. Reuse an already-loaded, unchanged body instead of fetching it
+  again. Do this before composing the response or taking task actions.
+- Use catalog descriptions to select skills. They do not replace reading the selected skills'
+  instructions.
+- Call `read_skill` with the matching skill's name to load its `SKILL.md` and file manifest.
+  When a name matches more than one skill, use the candidates' stable `id` values to select the
+  intended one instead of guessing.
+- Read a bundled file only when the loaded skill directs you to it. Pass its skill-relative
+  `path` back to `read_skill`. These identifiers are not local filesystem paths.
+- Refresh the catalog after any operation that may add, remove, rename, or otherwise change a
+  library entry. Re-read an applicable skill after its files change or when its body is no
+  longer in context.
 
-## Editing
+## Delegation
 
-- Every payload carries the skill's `id` and its `url`. Save the `id`: names can repeat,
-  and the write tools address skills by `id` only. The `url` is the page the user reads
-  the skill on, and the link to hand them.
-- A skill with a `mechanism` (a GitHub repository, or another person's shared skill) is a
-  read-only mirror here. Do not try to edit it; change what feeds it, and tell the user
-  where it lives.
-- A skill with no `mechanism` is editable, by `id` and path: `write_skill_file` sends a
-  whole file, `edit_skill_file` replaces one exact fragment that must appear exactly once,
-  and `delete_skill_file` removes a bundled file. Prefer the exact edit for a small change
-  in a long file; a file too large to hold inline is refused there and names
-  `write_skill_file` instead.
-- `create_skill` takes the new skill's `SKILL.md` content and nothing else: its frontmatter
-  is the name and the description. Writing `SKILL.md` later works the same way, so changing
-  the frontmatter name renames the skill, and the write's result carries the identity it
-  produced: use that name from then on, not the one you started with. A name collision on create returns every holder
-  with its `id`; never retry a create by guessing.
+Do not assume a subagent inherits the parent's RemoteSkill catalog, loaded skill bodies, or MCP
+connection. Give it the applicable skill names and instructions in its task context. If its
+harness exposes the RemoteSkill tools, tell it to discover and read applicable skills itself.
+If it has no such access, provide the instructions it needs without claiming it loaded them.
 
-## Adding from links
+## Access Limits
 
-- When the user hands you links to skills, or points you at some you can see, call
-  `add_skills` with them, one item per link. Two kinds work: a GitHub link to the skill's
-  `SKILL.md` on a branch (the `blob` address, the `raw.githubusercontent.com` spelling of
-  the same file, or the `/tree/` link to the directory it sits in), and a RemoteSkill share
-  link somebody sent them.
-- A skill is a directory holding a `SKILL.md`, so each link has to name that one directory.
-  A repository on its own is refused rather than guessed at, because it may hold many
-  skills; the user picks among a repository's skills on the RemoteSkill import screen.
-- Items are independent, and results come back one per item, in your order, with any
-  failure inline beside its link. Read every entry rather than only the successes, and
-  report failures to the user with the reason each result carries.
-- `mode` is per item, applies to share links only, and defaults to following the person who
-  shared it, which stops working if they stop sharing. `copy` takes a detached copy that is
-  the user's to edit and never updates again.
-- Read each result rather than assuming one. `outcome: updated` means the user already had
-  a skill fed by that repository directory and it was refreshed, not that a second one
-  appeared. A name one of their skills already wears is kept beside it rather than
-  replacing it, so hand them the `url` in the result, which is what tells the two apart.
+If `list_skills` or `read_skill` is unavailable, unauthenticated, or fails, do not claim the
+catalog was checked and do not invent its contents. Use applicable skills already present in
+context. When the missing catalog could affect the answer or task, state the limitation plainly
+and continue with the best available guidance.
 
-## Removing
+## Library Management
 
-- When the user asks to remove skills from their library, call `remove_skills` with their
-  stable `id`s, from `list_skills`. Never guess an `id` from a name: list first, and if a
-  name matches two skills, ask the user which one they mean, because removal cannot be
-  undone and there is no history behind it.
-- An `id` that matches nothing answers `not_found` for that entry, so a retry after a
-  partial success is safe. Report each entry's outcome to the user.
+For creating, editing, importing, or removing skills, read the
+[library management reference](references/library-management.md) before using a write tool.

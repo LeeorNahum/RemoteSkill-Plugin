@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "remoteskill",
   "displayName": "RemoteSkill",
-  "version": "2.2.1",
-  "description": "Serves your RemoteSkill library to this agent. Your Agent Skills live in one hosted place and every agent reads the same copy.",
+  "version": "3.1.0",
+  "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"

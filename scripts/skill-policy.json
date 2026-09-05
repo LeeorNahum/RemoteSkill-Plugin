@@ -1,0 +1,30 @@
+{
+  "frontmatter": {
+    "name": "remoteskill",
+    "descriptionMaxLength": 1024
+  },
+  "descriptionRequiredPhrases": [
+    "every request",
+    "global Agent Skills",
+    "simple replies and tasks that do not mention skills",
+    "managing the user's RemoteSkill library"
+  ],
+  "bodyRequiredPhrases": [
+    "Before the first answer",
+    "After context compaction",
+    "Before every response",
+    "says it always applies",
+    "already-loaded, unchanged body",
+    "catalog descriptions to select skills",
+    "They do not replace reading",
+    "Refresh the catalog",
+    "Do not assume a subagent inherits",
+    "do not claim the",
+    "sourceUrl",
+    "sharedBy",
+    "[library management reference](references/library-management.md)"
+  ],
+  "bodyForbiddenPhrases": [
+    "`mechanism`"
+  ]
+}

@@ -2,63 +2,36 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/LeeorNahum/RemoteSkill-Plugin?sort=semver)](https://github.com/LeeorNahum/RemoteSkill-Plugin/releases/latest)
 
-Points an agent at your [RemoteSkill](https://remoteskill.md) library: one MCP server at
-`https://mcp.remoteskill.md/mcp`, declared in both the [Agent Plugins 1.0.0](https://agent-plugins.org)
-format (`plugin.json`, `mcp.json`) and Claude Code's (`.claude-plugin/`, `.mcp.json`).
-
-Sign-in is OAuth through your agent's own prompt. Skills are per-account content served
-behind that sign-in, so the plugin carries none; `skills/remoteskill/` holds only the usage
-skill. A plugin installed before you sign in shows nothing until the sign-in completes,
-because the format treats an unauthorized server as a failed connection.
+Connects an agent to your global [RemoteSkill](https://remoteskill.md) library through
+`https://mcp.remoteskill.md/mcp`. The plugin ships both the
+[Agent Plugins 1.0.0](https://agent-plugins.org) manifests (`plugin.json`, `mcp.json`) and a
+Claude Code adapter (`.claude-plugin/`, `.mcp.json`). Compatible hosts can expose its bundled
+Agent Skill from the plugin installation, independently of the current project directory. The
+package cannot force a host to expose or select that skill, load the catalog, or pass either one
+into subagents.
 
 ## Tools
 
-- `list_skills`: your catalog, every skill's name and full description, each with its ID and URL.
-- `read_skill`: one skill's `SKILL.md` and file manifest, or a single bundled file.
-- `create_skill`: a new hosted skill from the `SKILL.md` you give it, which carries the name in its
-  frontmatter. An existing name is refused with every holder listed.
-- `write_skill_file`, `edit_skill_file`, `delete_skill_file`: change one file in a hosted skill, by
-  the skill's stable ID. Write sends the whole file; edit replaces one exact fragment.
-- `add_skills`: add skills from links, each naming one skill: a GitHub link to its `SKILL.md` on a
-  branch, or a RemoteSkill share link. A repository on its own is refused, because it may hold many
-  skills. Results come back per link, in order, with any failure inline beside its link.
-- `remove_skills`: remove whole skills by stable ID. Frees their names, ends every follower's
-  access, and cannot be undone. An ID that matches nothing answers `not_found`, so a retry after a
-  partial success is safe.
+- `list_skills` loads the catalog and `read_skill` loads one skill or bundled file.
+- `create_skill` creates a hosted skill from its complete `SKILL.md`.
+- `write_skill_file`, `edit_skill_file`, and `delete_skill_file` manage hosted skill files by
+  stable skill ID.
+- `add_skills` imports repository or share links, and `remove_skills` removes skills by stable
+  ID.
 
-Writes reach exactly what you could edit in the app: hosted skills nothing else updates. A
-skill mirroring a GitHub repository or following someone's shared skill is read-only here.
+These operations describe the current public tool surface. Agents should use the MCP server's
+live tool list as the authority rather than relying on a fixed count. Skills carrying
+`sourceUrl` or `sharedBy` are read-only mirrors. Hosted skills with neither field can be edited.
 
-## Where it works
+## Connection
 
-The server speaks MCP revision `2026-07-28` only. Each row carries the date it was measured,
-because they were not all measured on the same day:
+If the host reports that authentication is required, use the host's MCP authentication flow.
+If the tools are already available, no separate sign-in step is needed. See [SETUP.md](SETUP.md)
+for the Claude Code path and portable troubleshooting guidance.
 
-| Client | Connects | Measured |
-| --- | --- | --- |
-| Claude Code 2.1.229 | **Yes**, sends `2026-07-28` | 2026-08-13 |
-| claude.ai | **Yes** | 2026-08-13 |
-| ChatGPT | **Yes** | 2026-08-09 |
-| Cursor 3.15.6 | Not yet, sends `2025-11-25` | 2026-08-09 |
-| VS Code 1.132.0 | Not yet | 2026-08-09 |
-| Codex CLI 0.147.0 | Not yet, sends `2025-06-18` | 2026-08-09 |
-
-Claude Code was measured on the wire: a local server logged its requests, and it sent
-`MCP-Protocol-Version: 2026-07-28` with `server/discover` as its first call, never `initialize`.
-The claude.ai row is weaker evidence, measured in the product rather than on the wire: the
-connection is healthy and all seven tools are listed, split two and five by their read-only and
-destructive annotations, which needs a completed `tools/list` to render. Claude Desktop is not in
-the table because it was not tested.
-
-The rows still at "not yet" connect without any plugin change once they ship the current
-revision, which is exactly what Claude Code did between 2.1.226 and 2.1.229.
-
-## Connecting
-
-The server is OAuth, so a fresh install reports `! Needs authentication` and shows no tools until
-you sign in. That is the first state, not a fault. `SETUP.md` walks an agent through the
-connection, and in Claude Code the manual path is `/mcp`, then `plugin:remoteskill:remoteskill`,
-then Authenticate.
+The server uses Streamable HTTP and currently accepts only MCP revision `2026-07-28`. If it
+returns `UnsupportedProtocolVersionError` (`-32022`), update the client. Installing this package
+does not guarantee protocol compatibility, and reinstalling it cannot add support to the client.
 
 ## Install
 
@@ -75,9 +48,26 @@ codex plugin add remoteskill@remoteskill
 git clone https://github.com/LeeorNahum/RemoteSkill-Plugin ~/.cursor/plugins/local/remoteskill
 ```
 
-VS Code: clone anywhere, then add the directory to `chat.pluginLocations` in user settings.
+VS Code users can clone the repository and add its directory to `chat.pluginLocations` in user
+settings.
 
-A test in the RemoteSkill repository asserts both manifests equal the endpoint the
-deployment advertises, so they cannot silently diverge.
+## Update
+
+First refresh the marketplace metadata, then refresh the installed package:
+
+```bash
+# Codex
+codex plugin marketplace upgrade remoteskill
+codex plugin add remoteskill@remoteskill
+
+# Claude Code
+claude plugin marketplace update remoteskill
+claude plugin update remoteskill@remoteskill
+```
+
+Start a new session after the package update so the host can rediscover its manifests, tools, and
+skills. Hosted RemoteSkill library changes are live on the next MCP read, but content already read
+into an existing conversation can remain stale. Refresh the catalog and re-read changed skills
+after a library update.
 
 Licensed under the [Apache License 2.0](LICENSE).
