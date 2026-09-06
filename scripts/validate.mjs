@@ -110,6 +110,7 @@ export async function validatePackage(root = scriptRoot) {
   const claudePlugin = await readJson(resolve(root, ".claude-plugin/plugin.json"), errors)
   const claudeMarketplace = await readJson(resolve(root, ".claude-plugin/marketplace.json"), errors)
   const claudeMcp = await readJson(resolve(root, ".mcp.json"), errors)
+  const claudeHooks = await readJson(resolve(root, ".claude-plugin/hooks.json"), errors)
   const contract = await readJson(resolve(root, "scripts/release-contract.json"), errors)
   const policy = await readJson(resolve(root, "scripts/skill-policy.json"), errors)
   const version = plugin?.version
@@ -147,6 +148,30 @@ export async function validatePackage(root = scriptRoot) {
   addEqual(errors, ".mcp.json server URL", claudeMcp?.mcpServers?.remoteskill?.url, canonicalServer?.url)
   rejectCredentialConfiguration("mcp.json remoteskill server", canonicalServer, errors)
   rejectCredentialConfiguration(".mcp.json remoteskill server", claudeMcp?.mcpServers?.remoteskill, errors)
+
+  const catalogReminder =
+    "Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task."
+  addEqual(errors, "Claude hooks manifest path", claudePlugin?.hooks, "./.claude-plugin/hooks.json")
+  if (!hasExactKeys(claudeHooks, ["hooks"])) errors.push(".claude-plugin/hooks.json must contain only hooks")
+  if (!hasExactKeys(claudeHooks?.hooks, ["SubagentStart", "UserPromptSubmit"])) {
+    errors.push(".claude-plugin/hooks.json must cover main prompts and subagent startup")
+  }
+  for (const event of ["SubagentStart", "UserPromptSubmit"]) {
+    const expectedHook = {
+      hooks: [
+        {
+          type: "command",
+          command: `echo '${JSON.stringify({
+            hookSpecificOutput: { hookEventName: event, additionalContext: catalogReminder },
+          })}'`,
+          timeout: 10,
+        },
+      ],
+    }
+    if (!isDeepStrictEqual(claudeHooks?.hooks?.[event], [expectedHook])) {
+      errors.push(`.claude-plugin/hooks.json ${event} must inject the RemoteSkill bootstrap reminder`)
+    }
+  }
 
   addEqual(errors, "Claude plugin name", claudePlugin?.name, plugin?.name)
   addEqual(errors, "Claude plugin description", claudePlugin?.description, plugin?.description)

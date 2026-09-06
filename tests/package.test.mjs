@@ -158,6 +158,39 @@ test("credential-bearing MCP configuration is rejected", async (context) => {
   assert.ok(result.errors.includes("mcp.json remoteskill server must not declare request headers or credentials"))
 })
 
+test("credential-bearing Claude MCP configuration is rejected", async (context) => {
+  const candidate = await copyCandidate(context)
+  const mcpPath = resolve(candidate, ".mcp.json")
+  const mcp = JSON.parse(await readFile(mcpPath, "utf8"))
+  mcp.mcpServers.remoteskill.headers = { Authorization: "Bearer placeholder" }
+  await writeFile(mcpPath, `${JSON.stringify(mcp, null, 2)}\n`)
+
+  const result = await validatePackage(candidate)
+  assert.equal(result.ok, false)
+  assert.ok(result.errors.includes(".mcp.json remoteskill server must not declare request headers or credentials"))
+})
+
+test("Claude hooks inject the RemoteSkill reminder for main prompts and subagents", async () => {
+  const hooks = JSON.parse(await readFile(resolve(root, ".claude-plugin/hooks.json"), "utf8"))
+  const reminder =
+    "Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task."
+  const expected = (event) => ({
+    hooks: [
+      {
+        type: "command",
+        command: `echo '${JSON.stringify({
+          hookSpecificOutput: { hookEventName: event, additionalContext: reminder },
+        })}'`,
+        timeout: 10,
+      },
+    ],
+  })
+
+  assert.deepEqual(Object.keys(hooks.hooks).sort(), ["SubagentStart", "UserPromptSubmit"])
+  assert.deepEqual(hooks.hooks.SubagentStart, [expected("SubagentStart")])
+  assert.deepEqual(hooks.hooks.UserPromptSubmit, [expected("UserPromptSubmit")])
+})
+
 test("the policy fixture detects missing catalog guidance", async (context) => {
   const candidate = await copyCandidate(context)
   const skillPath = resolve(candidate, "skills/remoteskill/SKILL.md")

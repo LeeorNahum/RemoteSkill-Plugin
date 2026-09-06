@@ -7,8 +7,12 @@ Connects an agent to your global [RemoteSkill](https://remoteskill.md) library t
 [Agent Plugins 1.0.0](https://agent-plugins.org) manifests (`plugin.json`, `mcp.json`) and a
 Claude Code adapter (`.claude-plugin/`, `.mcp.json`). Compatible hosts can expose its bundled
 Agent Skill from the plugin installation, independently of the current project directory. The
-package cannot force a host to expose or select that skill, load the catalog, or pass either one
-into subagents.
+Claude Code adapter adds a small selection reminder before each user prompt and when each child
+agent starts. The reminder tells Claude to invoke the bundled bootstrap, which reuses a current
+catalog or calls `list_skills`, then directs Claude to read every applicable skill body. The
+reminder contains no catalog or skill content, and it cannot guarantee that Claude will follow
+every matching skill. Other hosts control whether they expose or select the bundled bootstrap and
+whether they pass it to subagents.
 
 ## Tools
 
@@ -30,7 +34,8 @@ If the tools are already available, no separate sign-in step is needed. See [SET
 for the Claude Code path and portable troubleshooting guidance.
 
 The server uses Streamable HTTP and currently accepts only MCP revision `2026-07-28`. If it
-returns `UnsupportedProtocolVersionError` (`-32022`), update the client. Installing this package
+returns `UnsupportedProtocolVersionError` (`-32022`), enable or update the client's protocol
+support as described in [SETUP.md](SETUP.md). Installing this package
 does not guarantee protocol compatibility, and reinstalling it cannot add support to the client.
 
 ## Install

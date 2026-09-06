@@ -21,6 +21,7 @@
   },
   "skillPolicy": "scripts/skill-policy.json",
   "publishedFiles": [
+    ".claude-plugin/hooks.json",
     ".claude-plugin/marketplace.json",
     ".claude-plugin/plugin.json",
     ".mcp.json",

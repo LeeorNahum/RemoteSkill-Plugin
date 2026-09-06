@@ -18,9 +18,12 @@ The user's global Agent Skills live in their RemoteSkill library. The connected
 - After context compaction, treat the catalog as absent unless the compacted context clearly
   preserves it, and call `list_skills` before answering.
 - Before every response, inspect the catalog descriptions. Apply every skill whose description
-  says it always applies and every skill that matches the current request. Read a matching body
-  when it is absent or stale. Reuse an already-loaded, unchanged body instead of fetching it
-  again. Do this before composing the response or taking task actions.
+  says it always applies. A skill that says it applies whenever visible or available applies here
+  because it is in this catalog. Unconditional instructions apply even to a trivial or unrelated
+  request. Evaluate any other stated conditions against the current request. For every applicable
+  skill, call `read_skill` when its body is absent or stale before proceeding. Do not infer or
+  claim the body's instructions from its description alone. Reuse an already-loaded, unchanged body
+  instead of fetching it again. Do this before composing the response or taking task actions.
 - Use catalog descriptions to select skills. They do not replace reading the selected skills'
   instructions.
 - Call `read_skill` with the matching skill's name to load its `SKILL.md` and file manifest.

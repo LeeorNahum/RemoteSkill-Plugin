@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SubagentStart\",\"additionalContext\":\"Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task.\"}}'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task.\"}}'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

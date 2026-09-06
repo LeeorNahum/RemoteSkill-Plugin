@@ -11,6 +11,7 @@
   "homepage": "https://remoteskill.md",
   "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
   "license": "Apache-2.0",
+  "hooks": "./.claude-plugin/hooks.json",
   "keywords": [
     "agent-skills",
     "skills",
