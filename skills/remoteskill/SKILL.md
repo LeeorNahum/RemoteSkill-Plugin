@@ -26,9 +26,9 @@ The user's global Agent Skills live in their RemoteSkill library. The connected
   instead of fetching it again. Do this before composing the response or taking task actions.
 - Use catalog descriptions to select skills. They do not replace reading the selected skills'
   instructions.
-- Call `read_skill` with the matching skill's name to load its `SKILL.md` and file manifest.
-  When a name matches more than one skill, use the candidates' stable `id` values to select the
-  intended one instead of guessing.
+- Call `read_skill` with the matching name or stable ID in its `skill` argument to load
+  `SKILL.md` and the file manifest. When a name matches more than one skill, pass the intended
+  candidate's `id` value in that same `skill` argument instead of guessing.
 - Read a bundled file only when the loaded skill directs you to it. Pass its skill-relative
   `path` back to `read_skill`. These identifiers are not local filesystem paths.
 - Refresh the catalog after any operation that may add, remove, rename, or otherwise change a
