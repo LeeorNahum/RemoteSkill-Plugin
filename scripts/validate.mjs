@@ -21,6 +21,7 @@ const publicTools = [
   "edit_skill_file",
   "delete_skill_file",
   "add_skills",
+  "publish_skill",
   "remove_skills",
 ]
 const expectedVersionContract = {

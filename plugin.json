@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "remoteskill",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
   "author": {
     "name": "Leeor Nahum",
