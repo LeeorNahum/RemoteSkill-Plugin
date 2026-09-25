@@ -18,16 +18,16 @@ whether they pass it to subagents.
 
 - `list_skills` loads the catalog and `read_skill` loads one skill or bundled file.
 - `create_skill` creates a hosted skill from its complete `SKILL.md`.
-- `write_skill_file`, `edit_skill_file`, and `delete_skill_file` manage the files of a hosted
-  skill by stable skill ID.
+- `write_skill_file`, `edit_skill_file`, and `delete_skill_file` manage the files of a skill
+  with no update source, by stable skill ID.
 - `add_skills` imports repository or share links, and `remove_skills` removes skills by stable
   ID.
 
 These operations describe the current public tool surface. Agents should use the MCP server's
 live tool list as the authority rather than relying on a fixed count. Skills carrying
 `sourceUrl` or `sharedBy` update from that source and are read-only until the user detaches
-them in RemoteSkill, which keeps the files, stops the updates, and makes them editable. Hosted
-skills with neither field can be edited.
+them in RemoteSkill, which keeps the files, stops the updates, and makes them editable. Skills
+with neither field can be edited.
 
 ## Connection
 

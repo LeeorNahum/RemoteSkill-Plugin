@@ -10,7 +10,7 @@ A skill with `sourceUrl` mirrors a GitHub repository. A skill with `sharedBy` fo
 person's shared skill. Either one updates from that source and is read-only here until
 the user detaches it in RemoteSkill; detaching keeps its files, stops the updates, and makes it
 editable, and no tool does it.
-A skill with neither field is hosted by RemoteSkill and can be edited by stable `id`. Never
+A skill with neither field has no update source and can be edited by stable `id`. Never
 collapse these fields into an invented wrapper. For a read-only entry, do not attempt a
 RemoteSkill write against it, because the write is refused: tell the user where it updates from
 and that detaching it in RemoteSkill makes it editable, or change the repository identified by
