@@ -3,7 +3,7 @@ name: "remoteskill"
 description: "Use for every request to apply the user's global Agent Skills and preferences, including simple replies and tasks that do not mention skills. Also use when managing the user's RemoteSkill library."
 metadata:
   author: "Leeor Nahum"
-  version: "3.2.0"
+  version: "4.0.0"
 ---
 
 # RemoteSkill
@@ -51,8 +51,8 @@ and continue with the best available guidance.
 
 ## Library Management
 
-For creating, editing, publishing, importing, or removing skills, read the
+For creating, editing, importing, or removing skills, read the
 [library management reference](references/library-management.md) before using a write tool.
-A catalog entry says what a write can reach: `sourceUrl` with `editing: true` is a mirror the
-user edits here, `sharedBy` is always read-only, and `pending: true` means what you read is an
-edit not yet published to its repository.
+A skill carrying `sourceUrl` or `sharedBy` updates from that source and is read-only here until
+the user detaches it in RemoteSkill; detaching keeps its files, stops the updates, and makes it
+editable, and no tool does it.

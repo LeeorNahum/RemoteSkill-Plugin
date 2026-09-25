@@ -18,19 +18,16 @@ whether they pass it to subagents.
 
 - `list_skills` loads the catalog and `read_skill` loads one skill or bundled file.
 - `create_skill` creates a hosted skill from its complete `SKILL.md`.
-- `write_skill_file`, `edit_skill_file`, and `delete_skill_file` manage skill files by stable
-  skill ID: hosted skills, and repository mirrors the user turned editing on for, whose writes
-  land in a working copy that is live to every agent at once.
-- `publish_skill` commits a mirror's pending edits to its GitHub repository as one commit, only
-  when the user asked.
+- `write_skill_file`, `edit_skill_file`, and `delete_skill_file` manage the files of a hosted
+  skill by stable skill ID.
 - `add_skills` imports repository or share links, and `remove_skills` removes skills by stable
   ID.
 
 These operations describe the current public tool surface. Agents should use the MCP server's
 live tool list as the authority rather than relying on a fixed count. Skills carrying
-`sharedBy` are read-only mirrors, and so are skills carrying `sourceUrl` unless the entry also
-says `editing: true`. An entry saying `pending: true` is serving an edit not yet published to
-its repository. Hosted skills with neither source field can be edited.
+`sourceUrl` or `sharedBy` update from that source and are read-only until the user detaches
+them in RemoteSkill, which keeps the files, stops the updates, and makes them editable. Hosted
+skills with neither field can be edited.
 
 ## Connection
 
