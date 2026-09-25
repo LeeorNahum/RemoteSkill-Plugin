@@ -3,7 +3,7 @@ name: "remoteskill"
 description: "Use for every request to apply the user's global Agent Skills and preferences, including simple replies and tasks that do not mention skills. Also use when managing the user's RemoteSkill library."
 metadata:
   author: "Leeor Nahum"
-  version: "4.0.0"
+  version: "4.1.0"
 ---
 
 # RemoteSkill
@@ -48,6 +48,19 @@ If `list_skills` or `read_skill` is unavailable, unauthenticated, or fails, do n
 catalog was checked and do not invent its contents. Use applicable skills already present in
 context. When the missing catalog could affect the answer or task, state the limitation plainly
 and continue with the best available guidance.
+
+## Links And Sharing
+
+- Every entry's `url` opens the skill for the user. While the user shares a skill, it also
+  carries `shareUrl`, its public but unlisted address, and that is the one to hand anyone else.
+  Without `shareUrl` the skill is private. The user turns sharing on and off in RemoteSkill, and
+  no tool does it.
+- `{shareUrl}.md` lets an agent with no RemoteSkill connection read a shared skill. It answers
+  any fetch with the skill's SKILL.md followed by a list of its bundled files, each linked to a
+  raw address that needs no sign-in either. `shareUrl` itself answers the same way to a fetch
+  that prefers Markdown.
+- To reference a shared skill from a README or from another skill, take its badge snippet from
+  the [library management reference](references/library-management.md).
 
 ## Library Management
 

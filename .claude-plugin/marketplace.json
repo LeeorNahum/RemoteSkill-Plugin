@@ -10,7 +10,7 @@
       "name": "remoteskill",
       "source": "./",
       "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "author": {
         "name": "Leeor Nahum",
         "url": "https://github.com/LeeorNahum"

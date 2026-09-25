@@ -29,6 +29,7 @@ file), which is what reading it costs.
 - `delete_skill_file` removes one bundled file. It cannot remove `SKILL.md`.
 - Writing `SKILL.md` can rename a skill. Continue with the name and identity returned by the
   write result.
+- Editing a skill that carries `shareUrl` changes it at once for everyone who follows it.
 
 ## Importing links
 
@@ -39,6 +40,31 @@ ambiguous and must not be guessed.
 Read every per-item result. For share links, the default follows the sharer and `copy` creates a
 detached editable copy. An `updated` outcome means an existing repository-backed skill was
 refreshed. Give the user the returned `url`, especially when names repeat.
+
+## Referencing a shared skill
+
+A README or another skill references a shared skill through its badge. Fill `{name}` and
+`{shareUrl}` from the skill's entry. The alt text names the skill and the link is the share
+address:
+
+```markdown
+[![{name} on RemoteSkill]({shareUrl}/badge.svg)]({shareUrl})
+```
+
+Where the host renders HTML, this form follows the viewer's light or dark color scheme:
+
+```html
+<a href="{shareUrl}">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="{shareUrl}/badge.svg?theme=dark">
+    <img alt="{name} on RemoteSkill" src="{shareUrl}/badge.svg">
+  </picture>
+</a>
+```
+
+The larger badge is `{shareUrl}/badge.svg?size=large`, and its dark form is
+`{shareUrl}/badge.svg?size=large&theme=dark`. Before a skill has `shareUrl`, its badge shows
+only the RemoteSkill mark, so ask the user to share it first.
 
 ## Removing skills
 
