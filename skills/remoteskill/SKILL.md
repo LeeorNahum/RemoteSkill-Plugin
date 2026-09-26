@@ -3,7 +3,7 @@ name: "remoteskill"
 description: "Use for every request to apply the user's global Agent Skills and preferences, including simple replies and tasks that do not mention skills. Also use when managing the user's RemoteSkill library."
 metadata:
   author: "Leeor Nahum"
-  version: "4.1.0"
+  version: "4.1.1"
 ---
 
 # RemoteSkill

@@ -26,7 +26,8 @@ whether they pass it to subagents.
 These operations describe the current public tool surface. Agents should use the MCP server's
 live tool list as the authority rather than relying on a fixed count. Skills carrying
 `sourceUrl` or `sharedBy` update from that source and are read-only until the user detaches
-them in RemoteSkill, which keeps the files, stops the updates, and makes them editable. Skills
+them in RemoteSkill, which keeps the files, stops the updates, and makes them editable. The user
+detaches one by saving a change to it in RemoteSkill, which asks first, or from its menu. Skills
 with neither field can be edited.
 
 ## Connection

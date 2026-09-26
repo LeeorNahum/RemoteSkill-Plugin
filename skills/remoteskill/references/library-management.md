@@ -13,8 +13,8 @@ editable, and no tool does it.
 A skill with neither field has no update source and can be edited by stable `id`. Never
 collapse these fields into an invented wrapper. For a read-only entry, do not attempt a
 RemoteSkill write against it, because the write is refused: tell the user where it updates from
-and that detaching it in RemoteSkill makes it editable, or change the repository identified by
-`sourceUrl` outside RemoteSkill.
+and that they can edit it themselves at its `url`, where the first change they save asks to
+detach it, or change the repository identified by `sourceUrl` outside RemoteSkill.
 
 Every entry also carries `tokens` (`skillMd` for SKILL.md alone and `total` for every text
 file), which is what reading it costs.
