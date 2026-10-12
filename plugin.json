@@ -15,7 +15,7 @@
       "interface": {
         "displayName": "RemoteSkill",
         "shortDescription": "Access your skills anywhere",
-        "longDescription": "Agent Skills are the instructions you write so an assistant behaves the way you want, but they tend to live on whatever laptop you wrote them on, and a new tool means starting over. RemoteSkill hosts your skills so any agent you use can reach them: teach your coding agent something on Monday, and it's already there when you open ChatGPT on Tuesday. In this plugin, ChatGPT can list your skills, open any skill's instructions and files, create a new skill, and edit the ones you own. Your skills stay private to your account, and you can share a specific skill by link when you want to.",
+        "longDescription": "Agent Skills are the instructions you write so an assistant behaves the way you want, but they tend to live on whatever laptop you wrote them on, and a new tool means starting over. RemoteSkill hosts your skills so any agent you use can reach them: teach your coding agent something on Monday, and it's already there when you open ChatGPT on Tuesday. In this plugin, ChatGPT can list your skills, open any skill's instructions and files, create a new skill, and edit your skills. A skill that stays in sync with GitHub or with someone who shared it is read-only until you detach it. Your skills stay private to your account, and you can share a specific skill by link when you want to.",
         "developerName": "Leeor Nahum",
         "category": "Productivity",
         "capabilities": [],
@@ -75,7 +75,7 @@
               "prompt": "Show me the private skills in my coworker Dana's RemoteSkill account."
             },
             {
-              "description": "No skill in the test account concerns weather. ChatGPT may load the skill list, which is read-only, finds nothing that applies, and answers without creating, editing, adding, or removing anything.",
+              "description": "No skill in the test account concerns weather. ChatGPT loads the skill list first, as it does in every conversation, which is read-only. It finds nothing that applies and answers without creating, editing, adding, or removing anything.",
               "prompt": "What should I pack for a rainy weekend in Seattle?"
             }
           ]
@@ -85,7 +85,7 @@
       },
       "publication": {
         "countries": [],
-        "release_notes": "5.0.0 is the first version in the plugin format. It bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
+        "release_notes": "5.0.0 bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
       }
     }
   }
