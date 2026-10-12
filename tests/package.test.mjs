@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { cp, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises"
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, relative, resolve, sep } from "node:path"
 import test from "node:test"
@@ -170,25 +170,27 @@ test("credential-bearing Claude MCP configuration is rejected", async (context) 
   assert.ok(result.errors.includes(".mcp.json remoteskill server must not declare request headers or credentials"))
 })
 
-test("Claude hooks inject the RemoteSkill reminder for main prompts and subagents", async () => {
-  const hooks = JSON.parse(await readFile(resolve(root, ".claude-plugin/hooks.json"), "utf8"))
-  const reminder =
-    "Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task."
-  const expected = (event) => ({
-    hooks: [
-      {
-        type: "command",
-        command: `echo '${JSON.stringify({
-          hookSpecificOutput: { hookEventName: event, additionalContext: reminder },
-        })}'`,
-        timeout: 10,
-      },
-    ],
-  })
+test("a hooks declaration fails validation", async (context) => {
+  const candidate = await copyCandidate(context)
+  const manifestPath = resolve(candidate, ".claude-plugin/plugin.json")
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"))
+  manifest.hooks = "./.claude-plugin/hooks.json"
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}
+`)
 
-  assert.deepEqual(Object.keys(hooks.hooks).sort(), ["SubagentStart", "UserPromptSubmit"])
-  assert.deepEqual(hooks.hooks.SubagentStart, [expected("SubagentStart")])
-  assert.deepEqual(hooks.hooks.UserPromptSubmit, [expected("UserPromptSubmit")])
+  const result = await validatePackage(candidate)
+  assert.equal(result.ok, false)
+  assert.ok(result.errors.includes(".claude-plugin/plugin.json must not declare hooks"))
+})
+
+test("a hooks file a host would load undeclared fails validation", async (context) => {
+  const candidate = await copyCandidate(context)
+  await mkdir(resolve(candidate, "hooks"))
+  await writeFile(resolve(candidate, "hooks/hooks.json"), "{}")
+
+  const result = await validatePackage(candidate)
+  assert.equal(result.ok, false)
+  assert.ok(result.errors.includes("hooks must not exist: the plugin runs no hooks"))
 })
 
 test("the policy fixture detects missing catalog guidance", async (context) => {

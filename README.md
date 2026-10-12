@@ -5,14 +5,13 @@
 Connects an agent to your global [RemoteSkill](https://remoteskill.md) library through
 `https://mcp.remoteskill.md/mcp`. The plugin ships both the
 [Agent Plugins 1.0.0](https://agent-plugins.org) manifests (`plugin.json`, `mcp.json`) and a
-Claude Code adapter (`.claude-plugin/`, `.mcp.json`). Compatible hosts can expose its bundled
-Agent Skill from the plugin installation, independently of the current project directory. The
-Claude Code adapter adds a small selection reminder before each user prompt and when each child
-agent starts. The reminder tells Claude to invoke the bundled bootstrap, which reuses a current
-catalog or calls `list_skills`, then directs Claude to read every applicable skill body. The
-reminder contains no catalog or skill content, and it cannot guarantee that Claude will follow
-every matching skill. Other hosts control whether they expose or select the bundled bootstrap and
-whether they pass it to subagents.
+Claude Code adapter (`.claude-plugin/`, `.mcp.json`). Compatible hosts expose its bundled Agent
+Skill from the plugin installation, independently of the current project directory. That skill's
+description is the same order the server's own instructions open with: call `list_skills` before
+the first reply, then `read_skill` for each skill that applies. The plugin runs no hooks and holds
+none of your library, so every list and read comes from the server at that moment. No
+instruction can guarantee that an agent follows every matching skill, and each host controls
+whether it shows the bundled skill to subagents.
 
 ## Tools
 
@@ -22,6 +21,9 @@ whether they pass it to subagents.
   with no update source, by stable skill ID.
 - `add_skills` imports repository or share links, and `remove_skills` removes skills by stable
   ID.
+
+The server also offers every skill as a resource, which a host can show as a file to attach, and
+as a prompt, which a host can show as a slash command. Both are for a person to pick by hand.
 
 These operations describe the current public tool surface. Agents should use the MCP server's
 live tool list as the authority rather than relying on a fixed count. Skills carrying

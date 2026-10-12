@@ -4,10 +4,7 @@
     "descriptionMaxLength": 1024
   },
   "descriptionRequiredPhrases": [
-    "every request",
-    "global Agent Skills",
-    "simple replies and tasks that do not mention skills",
-    "managing the user's RemoteSkill library"
+    "Before the first reply in a session, call the RemoteSkill MCP server's list_skills tool, then read_skill for each skill whose description applies. Skipping this for a short message is an error. The user requires it on every turn, since some preferences apply to every reply."
   ],
   "bodyRequiredPhrases": [
     "Before the first answer",
@@ -22,8 +19,6 @@
     "do not claim the",
     "sourceUrl",
     "sharedBy",
-    "the one to hand anyone else",
-    "`{shareUrl}.md`",
     "[library management reference](references/library-management.md)"
   ],
   "bodyForbiddenPhrases": [

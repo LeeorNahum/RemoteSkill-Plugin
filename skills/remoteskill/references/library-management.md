@@ -41,6 +41,18 @@ Read every per-item result. For share links, the default follows the sharer and 
 detached editable copy. An `updated` outcome means an existing repository-backed skill was
 refreshed. Give the user the returned `url`, especially when names repeat.
 
+## Links and sharing
+
+Every entry's `url` opens the skill for the user. While the user shares a skill, it also
+carries `shareUrl`, its public but unlisted address, and that is the one to hand anyone else.
+Without `shareUrl` the skill is private. The user turns sharing on and off in RemoteSkill, and
+no tool does it.
+
+`{shareUrl}.md` lets an agent with no RemoteSkill connection read a shared skill. It answers
+any fetch with the skill's SKILL.md followed by a list of its bundled files, each linked to a
+raw address that needs no sign-in either. `shareUrl` itself answers the same way to a fetch
+that prefers Markdown.
+
 ## Referencing a shared skill
 
 A README or another skill references a shared skill through its badge. Fill `{name}` and

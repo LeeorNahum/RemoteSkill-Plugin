@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "remoteskill",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
   "author": {
     "name": "Leeor Nahum",
@@ -9,5 +9,84 @@
   },
   "homepage": "https://remoteskill.md",
   "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "RemoteSkill",
+        "shortDescription": "Access your skills anywhere",
+        "longDescription": "Agent Skills are the instructions you write so an assistant behaves the way you want, but they tend to live on whatever laptop you wrote them on, and a new tool means starting over. RemoteSkill hosts your skills so any agent you use can reach them: teach your coding agent something on Monday, and it's already there when you open ChatGPT on Tuesday. In this plugin, ChatGPT can list your skills, open any skill's instructions and files, create a new skill, and edit the ones you own. Your skills stay private to your account, and you can share a specific skill by link when you want to.",
+        "developerName": "Leeor Nahum",
+        "category": "Productivity",
+        "capabilities": [],
+        "websiteURL": "https://remoteskill.md",
+        "supportURL": "https://remoteskill.md/support",
+        "privacyPolicyURL": "https://remoteskill.md/privacy",
+        "termsOfServiceURL": "https://remoteskill.md/terms",
+        "defaultPrompt": [
+          "List my skills and tell me which one fits what I am about to do",
+          "Open my writing style skill and follow it for this draft",
+          "Fix the typo in my code review skill and save it"
+        ],
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "List the library.",
+              "prompt": "What skills do I have in RemoteSkill?",
+              "tools_triggered": "list_skills",
+              "expected_behavior": "Names the five skills in the test account: meeting-notes, release-checklist, plain-language, reviewer-checklist, and remoteskill, each with what it is for."
+            },
+            {
+              "description": "Read one skill and follow it, including a bundled file.",
+              "prompt": "Use my meeting-notes skill to turn this into minutes: Ana and Raj met Tuesday, agreed to ship the beta on the 14th, and Raj will email the testers.",
+              "tools_triggered": "list_skills, read_skill",
+              "expected_behavior": "Reads the meeting-notes skill and its references/template.md, then writes the minutes in the layout that template gives."
+            },
+            {
+              "description": "Create a skill.",
+              "prompt": "Create a skill named review-notes that tells you to summarize code review comments as a short checklist.",
+              "tools_triggered": "create_skill",
+              "expected_behavior": "Asks to confirm the write, creates review-notes, and gives its link on remoteskill.md."
+            },
+            {
+              "description": "Edit a skill the account owns.",
+              "prompt": "Add this line to the end of my plain-language skill: Prefer short sentences.",
+              "tools_triggered": "list_skills, read_skill, edit_skill_file",
+              "expected_behavior": "Reads plain-language, asks to confirm the write, and saves the added line with edit_skill_file or write_skill_file. Reading the skill again shows the line."
+            },
+            {
+              "description": "Add a skill from a public GitHub link.",
+              "prompt": "Add this skill to my library: https://github.com/LeeorNahum/no-em-dashes-skill/blob/main/SKILL.md",
+              "tools_triggered": "add_skills",
+              "expected_behavior": "Asks to confirm, adds no-em-dashes, and says it stays in sync with that repository and is read-only until detached."
+            }
+          ],
+          "negative": [
+            {
+              "description": "A synced skill is read-only. The remoteskill skill in the test account mirrors a GitHub repository, so the write is refused and nothing changes. ChatGPT explains that the user can detach it on remoteskill.md or change the repository.",
+              "prompt": "Rewrite my remoteskill skill so it says to always answer in French."
+            },
+            {
+              "description": "The plugin reaches only the signed-in account's own library. It has no tool for another person's skills, so ChatGPT says it cannot do this and offers to add a skill from a share link the other person sends.",
+              "prompt": "Show me the private skills in my coworker Dana's RemoteSkill account."
+            },
+            {
+              "description": "No skill in the test account concerns weather. ChatGPT may load the skill list, which is read-only, finds nothing that applies, and answers without creating, editing, adding, or removing anything.",
+              "prompt": "What should I pack for a rainy weekend in Seattle?"
+            }
+          ]
+        },
+        "demo_recording_url": "https://drive.google.com/file/d/1sv0gS6QmFQ-EYeYjIwEknYC3JGz70Art/view?usp=sharing",
+        "commerce": false
+      },
+      "publication": {
+        "countries": [],
+        "release_notes": "5.0.0 is the first version in the plugin format. It bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
+      }
+    }
+  }
 }

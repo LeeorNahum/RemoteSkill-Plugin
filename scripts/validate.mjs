@@ -4,7 +4,7 @@ import Ajv from "ajv"
 import Ajv2020 from "ajv/dist/2020.js"
 import addFormats from "ajv-formats"
 import { isMap, Scalar } from "yaml"
-import { readdir, readFile } from "node:fs/promises"
+import { access, readdir, readFile } from "node:fs/promises"
 import { dirname, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 import { isDeepStrictEqual } from "node:util"
@@ -103,6 +103,15 @@ function rejectCredentialConfiguration(label, server, errors) {
   }
 }
 
+async function exists(path) {
+  try {
+    await access(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export async function validatePackage(root = scriptRoot) {
   const errors = []
   const plugin = await readJson(resolve(root, "plugin.json"), errors)
@@ -110,7 +119,6 @@ export async function validatePackage(root = scriptRoot) {
   const claudePlugin = await readJson(resolve(root, ".claude-plugin/plugin.json"), errors)
   const claudeMarketplace = await readJson(resolve(root, ".claude-plugin/marketplace.json"), errors)
   const claudeMcp = await readJson(resolve(root, ".mcp.json"), errors)
-  const claudeHooks = await readJson(resolve(root, ".claude-plugin/hooks.json"), errors)
   const contract = await readJson(resolve(root, "scripts/release-contract.json"), errors)
   const policy = await readJson(resolve(root, "scripts/skill-policy.json"), errors)
   const version = plugin?.version
@@ -149,28 +157,11 @@ export async function validatePackage(root = scriptRoot) {
   rejectCredentialConfiguration("mcp.json remoteskill server", canonicalServer, errors)
   rejectCredentialConfiguration(".mcp.json remoteskill server", claudeMcp?.mcpServers?.remoteskill, errors)
 
-  const catalogReminder =
-    "Mandatory: before any response or action, invoke the remoteskill:remoteskill Skill unless its current body is already active in your context, then follow it. Do this even for a trivial task."
-  addEqual(errors, "Claude hooks manifest path", claudePlugin?.hooks, "./.claude-plugin/hooks.json")
-  if (!hasExactKeys(claudeHooks, ["hooks"])) errors.push(".claude-plugin/hooks.json must contain only hooks")
-  if (!hasExactKeys(claudeHooks?.hooks, ["SubagentStart", "UserPromptSubmit"])) {
-    errors.push(".claude-plugin/hooks.json must cover main prompts and subagent startup")
-  }
-  for (const event of ["SubagentStart", "UserPromptSubmit"]) {
-    const expectedHook = {
-      hooks: [
-        {
-          type: "command",
-          command: `echo '${JSON.stringify({
-            hookSpecificOutput: { hookEventName: event, additionalContext: catalogReminder },
-          })}'`,
-          timeout: 10,
-        },
-      ],
-    }
-    if (!isDeepStrictEqual(claudeHooks?.hooks?.[event], [expectedHook])) {
-      errors.push(`.claude-plugin/hooks.json ${event} must inject the RemoteSkill bootstrap reminder`)
-    }
+  if (claudePlugin?.hooks !== undefined) errors.push(".claude-plugin/plugin.json must not declare hooks")
+  if (plugin?.hooks !== undefined) errors.push("plugin.json must not declare hooks")
+  // Hosts load a hooks file from these paths with no declaration at all.
+  for (const path of ["hooks", ".claude-plugin/hooks.json"]) {
+    if (await exists(resolve(root, path))) errors.push(`${path} must not exist: the plugin runs no hooks`)
   }
 
   addEqual(errors, "Claude plugin name", claudePlugin?.name, plugin?.name)
@@ -281,7 +272,9 @@ export async function validatePackage(root = scriptRoot) {
       .map((path) => `.claude-plugin/${path}`)
     const skillFiles = (await walkFiles(resolve(root, "skills")))
       .map((path) => `skills/${path}`)
-    const runtimeFiles = [...claudeFiles, ...skillFiles]
+    const assetFiles = (await walkFiles(resolve(root, "assets")))
+      .map((path) => `assets/${path}`)
+    const runtimeFiles = [...assetFiles, ...claudeFiles, ...skillFiles]
     const requiredFiles = [".mcp.json", "LICENSE", "README.md", "SETUP.md", "mcp.json", "plugin.json", ...runtimeFiles]
       .sort(compareText)
     if (JSON.stringify(published) !== JSON.stringify(requiredFiles)) {
