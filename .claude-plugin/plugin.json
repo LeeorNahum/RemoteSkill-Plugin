@@ -1,9 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "remoteskill",
   "displayName": "RemoteSkill",
-  "version": "5.0.0",
-  "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
+  "version": "5.0.1",
+  "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"

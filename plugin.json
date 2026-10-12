@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "remoteskill",
-  "version": "5.0.0",
-  "description": "Connects this agent to your global RemoteSkill library and bundles startup guidance for discovering and applying your Agent Skills in any project.",
+  "version": "5.0.1",
+  "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"
@@ -85,7 +85,7 @@
       },
       "publication": {
         "countries": [],
-        "release_notes": "5.0.0 bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
+        "release_notes": "5.0 bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
       }
     }
   }

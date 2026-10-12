@@ -3,7 +3,7 @@ name: "remoteskill"
 description: "Before the first reply in a session, call the RemoteSkill MCP server's list_skills tool, then read_skill for each skill whose description applies. Skipping this for a short message is an error. The user requires it on every turn, since some preferences apply to every reply."
 metadata:
   author: "Leeor Nahum"
-  version: "5.0.0"
+  version: "5.0.1"
 ---
 
 # RemoteSkill
