@@ -222,3 +222,20 @@ test("release publishing requires the tag to resolve to the current main tip", a
   assert.match(workflow, /test \"\$\{tagged_commit\}\" = \"\$\{main_commit\}\"/)
   assert.doesNotMatch(workflow, /merge-base --is-ancestor/)
 })
+
+test("the OpenAI staging adds the client registration setting and leaves the repository file alone", async (context) => {
+  const { stageOpenAi } = await import("../scripts/stage-openai.mjs")
+  const output = await mkdtemp(resolve(tmpdir(), "remoteskill-openai-"))
+  context.after(() => rm(output, { recursive: true, force: true }))
+
+  const staged = await stageOpenAi(output)
+  assert.deepEqual(await walk(output), [...staged.files].sort(compareText))
+  assert.ok(staged.files.includes("plugin.json"))
+  assert.ok(!staged.files.some((path) => path.startsWith(".")))
+  const stagedMcp = JSON.parse(await readFile(resolve(output, "mcp.json"), "utf8"))
+  assert.deepEqual(stagedMcp.mcpServers.remoteskill.extensions, {
+    "com.openai": { auth: { type: "oauth", client: { mode: "dcr" } } },
+  })
+  const own = JSON.parse(await readFile(resolve(root, "mcp.json"), "utf8"))
+  assert.equal(own.mcpServers.remoteskill.extensions, undefined)
+})

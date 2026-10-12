@@ -16,7 +16,7 @@
       "id": "https://json.schemastore.org/claude-code-plugin-manifest.json",
       "path": "claude/plugin.schema.json",
       "url": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-      "sha256": "07cece79508c925e40beb689052cd727bc78af06b6ba1d79c900d5d4e43e0168"
+      "sha256": "420a5867ff775f89ec6fdc211bf3e131633ec0856a1c33bea7fc0e2e2ed0daa6"
     },
     {
       "id": "https://json.schemastore.org/claude-code-marketplace.json",
