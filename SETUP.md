@@ -6,7 +6,7 @@ description: "Connect this plugin's RemoteSkill MCP server. Use when the server 
 # Connecting RemoteSkill
 
 The plugin declares one remote MCP server, `remoteskill`, at
-`https://mcp.remoteskill.md/mcp`. It needs no API key, custom header, environment variable, or
+`http://localhost:3003/mcp`. It needs no API key, custom header, environment variable, or
 project-local file.
 
 ## Connect when the host asks

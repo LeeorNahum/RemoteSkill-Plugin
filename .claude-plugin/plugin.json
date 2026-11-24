@@ -1,13 +1,13 @@
 {
   "name": "remoteskill",
   "displayName": "RemoteSkill",
-  "version": "5.0.1",
+  "version": "5.0.2-local.d664cb5ce14e",
   "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"
   },
-  "homepage": "https://remoteskill.md",
+  "homepage": "http://localhost:3000",
   "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
   "license": "Apache-2.0",
   "keywords": [
@@ -15,5 +15,10 @@
     "skills",
     "mcp",
     "remoteskill"
-  ]
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://github.com/LeeorNahum/RemoteSkill-Plugin#readme",
+  "supportUrl": "http://localhost:3000/contact",
+  "privacyPolicyUrl": "http://localhost:3000/privacy",
+  "termsOfServiceUrl": "http://localhost:3000/terms"
 }
