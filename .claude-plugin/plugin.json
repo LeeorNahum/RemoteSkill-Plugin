@@ -1,7 +1,7 @@
 {
   "name": "remoteskill",
   "displayName": "RemoteSkill",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "author": {
     "name": "Leeor Nahum",
@@ -15,5 +15,10 @@
     "skills",
     "mcp",
     "remoteskill"
-  ]
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://github.com/LeeorNahum/RemoteSkill-Plugin#readme",
+  "supportUrl": "https://remoteskill.md/contact",
+  "privacyPolicyUrl": "https://remoteskill.md/privacy",
+  "termsOfServiceUrl": "https://remoteskill.md/terms"
 }

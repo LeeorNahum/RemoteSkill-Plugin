@@ -7,7 +7,7 @@ Connects an agent to your global [RemoteSkill](https://remoteskill.md) library t
 [Agent Plugins 1.0.0](https://agent-plugins.org) manifests (`plugin.json`, `mcp.json`) and a
 Claude Code adapter (`.claude-plugin/`, `.mcp.json`). Compatible hosts expose its bundled Agent
 Skill from the plugin installation, independently of the current project directory. That skill's
-description is the same order the server's own instructions open with: call `list_skills` before
+description repeats the instruction the server's own instructions open with: call `list_skills` before
 the first reply, then `read_skill` for each skill that applies. The plugin runs no hooks and holds
 none of your library, so every list and read comes from the server at that moment. No
 instruction can guarantee that an agent follows every matching skill, and each host controls
@@ -46,17 +46,24 @@ does not guarantee protocol compatibility, and reinstalling it cannot add suppor
 ## Install
 
 ```bash
-# Codex
-codex plugin marketplace add LeeorNahum/RemoteSkill-Plugin
-codex plugin add remoteskill@remoteskill
-
 # Claude Code
 /plugin marketplace add LeeorNahum/RemoteSkill-Plugin
 /plugin install remoteskill@remoteskill
 
-# Cursor
-git clone https://github.com/LeeorNahum/RemoteSkill-Plugin ~/.cursor/plugins/local/remoteskill
+# Codex
+codex plugin marketplace add LeeorNahum/RemoteSkill-Plugin
+codex plugin add remoteskill@remoteskill
+codex features enable mcp_2026_07_28
 ```
+
+Codex reaches the server only with its `mcp_2026_07_28` feature on. Run `codex features list` to
+see its state. The feature may be marked under development.
+
+In the Claude app, open Customize, then Plugins, add this repository as a marketplace by its
+GitHub address, and install RemoteSkill from it.
+
+Cursor does not work yet. Its MCP client speaks revisions up to `2025-11-25`, and the server
+accepts only `2026-07-28`, so the connection is refused. Checked with Cursor 3.17.19.
 
 VS Code users can clone the repository and add its directory to `chat.pluginLocations` in user
 settings.
