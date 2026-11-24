@@ -10,7 +10,7 @@
       "name": "remoteskill",
       "displayName": "RemoteSkill",
       "source": "./",
-      "version": "5.0.2-preview.d664cb5ce14e",
+      "version": "5.0.2-preview.29cbd3bc065c",
       "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
       "author": {
         "name": "Leeor Nahum",
