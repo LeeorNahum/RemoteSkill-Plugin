@@ -1,15 +1,21 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "remoteskill",
-  "version": "5.0.1",
+  "version": "5.0.2-preview.d664cb5ce14e",
   "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "author": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"
   },
-  "homepage": "https://remoteskill.md",
+  "homepage": "https://preview.remoteskill.md",
   "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
   "license": "Apache-2.0",
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "mcp",
+    "remoteskill"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
@@ -19,10 +25,10 @@
         "developerName": "Leeor Nahum",
         "category": "Productivity",
         "capabilities": [],
-        "websiteURL": "https://remoteskill.md",
-        "supportURL": "https://remoteskill.md/support",
-        "privacyPolicyURL": "https://remoteskill.md/privacy",
-        "termsOfServiceURL": "https://remoteskill.md/terms",
+        "websiteURL": "https://preview.remoteskill.md",
+        "supportURL": "https://preview.remoteskill.md/contact",
+        "privacyPolicyURL": "https://preview.remoteskill.md/privacy",
+        "termsOfServiceURL": "https://preview.remoteskill.md/terms",
         "defaultPrompt": [
           "List my skills and tell me which one fits what I am about to do",
           "Open my writing style skill and follow it for this draft",
@@ -50,7 +56,7 @@
               "description": "Create a skill.",
               "prompt": "Create a skill named review-notes that tells you to summarize code review comments as a short checklist.",
               "tools_triggered": "create_skill",
-              "expected_behavior": "Asks to confirm the write, creates review-notes, and gives its link on remoteskill.md."
+              "expected_behavior": "Asks to confirm the write, creates review-notes, and gives its link on app.remoteskill.md."
             },
             {
               "description": "Edit a skill the account owns.",
@@ -67,7 +73,7 @@
           ],
           "negative": [
             {
-              "description": "A synced skill is read-only. The remoteskill skill in the test account mirrors a GitHub repository, so the write is refused and nothing changes. ChatGPT explains that the user can detach it on remoteskill.md or change the repository.",
+              "description": "A synced skill is read-only. The remoteskill skill in the test account mirrors a GitHub repository, so the write is refused and nothing changes. ChatGPT explains that the user can detach it on app.remoteskill.md or change the repository.",
               "prompt": "Rewrite my remoteskill skill so it says to always answer in French."
             },
             {
@@ -85,7 +91,7 @@
       },
       "publication": {
         "countries": [],
-        "release_notes": "5.0 bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply. The eight tools are unchanged from 4.0.0, and each sets readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
+        "release_notes": "5.0.2 points the support link at remoteskill.md/contact and says a skill's link is on app.remoteskill.md. As in 5.0.0, it bundles one skill that tells ChatGPT to load your skill list before its first reply and to read the skills that apply, and the eight tools are unchanged, each setting readOnlyHint, destructiveHint, idempotentHint, and openWorldHint to an explicit true or false. The server also offers each skill as a resource and as a prompt."
       }
     }
   }

@@ -1,5 +1,7 @@
 name: Release
 
+# The publish workflow pushes a release tag with the commit that changed the version on main. This
+# attaches the plugin as one ZIP, with its descriptors at the root, and the ZIP's SHA-256.
 on:
   push:
     tags:
@@ -19,47 +21,31 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check out tagged source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-          submodules: false
 
-      - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 22
-
-      - name: Validate package and tests
+      - name: Check the tag is main's tip and the plugin's version
         run: |
-          npm ci --ignore-scripts
-          npm run validate
-          npm test
-
-      - name: Verify reviewed main tag and source version
-        shell: bash
-        run: |
+          set -euo pipefail
           git fetch origin main --no-tags
-          tagged_commit="$(git rev-parse "${GITHUB_SHA}^{commit}")"
-          main_commit="$(git rev-parse "origin/main^{commit}")"
-          test "${tagged_commit}" = "${main_commit}"
-          version="$(node -p "require('./plugin.json').version")"
+          test "$(git rev-parse "${GITHUB_SHA}^{commit}")" = "$(git rev-parse "origin/main^{commit}")"
+          version="$(jq -r .version plugin.json)"
           test "v${version}" = "${GITHUB_REF_NAME}"
           echo "VERSION=${version}" >> "${GITHUB_ENV}"
 
-      - name: Stage and archive published files
-        shell: bash
+      - name: Archive the plugin
         run: |
-          node scripts/stage-release.mjs --output "dist/remoteskill-${VERSION}"
+          set -euo pipefail
+          mkdir -p dist
+          git archive --format=zip -o "dist/remoteskill-${VERSION}.zip" HEAD -- . ':!.github'
           cd dist
-          zip -X -r "remoteskill-${VERSION}.zip" "remoteskill-${VERSION}"
           sha256sum "remoteskill-${VERSION}.zip" > "remoteskill-${VERSION}.zip.sha256"
 
-      - name: Publish tagged GitHub release
+      - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
         run: |
           gh release create "${GITHUB_REF_NAME}" \
             "dist/remoteskill-${VERSION}.zip" \

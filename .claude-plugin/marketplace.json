@@ -1,6 +1,6 @@
 {
   "name": "remoteskill",
-  "description": "The RemoteSkill plugin: connects Claude Code to your hosted RemoteSkill library over MCP.",
+  "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
   "owner": {
     "name": "Leeor Nahum",
     "url": "https://github.com/LeeorNahum"
@@ -8,14 +8,15 @@
   "plugins": [
     {
       "name": "remoteskill",
+      "displayName": "RemoteSkill",
       "source": "./",
+      "version": "5.0.2-preview.d664cb5ce14e",
       "description": "Your RemoteSkill library in this agent, in any project. It loads your skill list at the start of a chat and reads the skills that apply.",
-      "version": "5.0.1",
       "author": {
         "name": "Leeor Nahum",
         "url": "https://github.com/LeeorNahum"
       },
-      "homepage": "https://remoteskill.md",
+      "homepage": "https://preview.remoteskill.md",
       "repository": "https://github.com/LeeorNahum/RemoteSkill-Plugin",
       "license": "Apache-2.0",
       "keywords": [
