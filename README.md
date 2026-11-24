@@ -87,4 +87,7 @@ skills. Hosted RemoteSkill library changes are live on the next MCP read, but co
 into an existing conversation can remain stale. Refresh the catalog and re-read changed skills
 after a library update.
 
+This repository is generated from RemoteSkill's own source, so a change made here directly does not
+last. To suggest one, write to contact@remoteskill.md.
+
 Licensed under the [Apache License 2.0](LICENSE).
